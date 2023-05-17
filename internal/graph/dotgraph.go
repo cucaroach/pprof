@@ -48,6 +48,8 @@ type DotConfig struct {
 
 	FormatValue func(int64) string // A formatting function for values
 	Total       int64              // The total weight of the graph, used to compute percentages
+
+	OmitNodelets bool // Should nodelets be included?
 }
 
 const maxNodelets = 4 // Number of nodelets for labels (both numeric and non)
@@ -83,7 +85,9 @@ func ComposeDot(w io.Writer, g *Graph, a *DotAttributes, c *DotConfig) {
 	// Add nodes and nodelets to DOT builder.
 	for _, n := range g.Nodes {
 		builder.addNode(n, nodeIDMap[n], maxFlat)
-		hasNodelets[n] = builder.addNodelets(n, nodeIDMap[n])
+		if !c.OmitNodelets {
+			hasNodelets[n] = builder.addNodelets(n, nodeIDMap[n])
+		}
 
 		// Collect all edges. Use a fake node to support multiple incoming edges.
 		for _, e := range n.Out {

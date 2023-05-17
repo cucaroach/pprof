@@ -19,6 +19,7 @@ package report
 import (
 	"fmt"
 	"io"
+	"os"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -1131,10 +1132,11 @@ func GetDOT(rpt *Report) (*graph.Graph, *graph.DotConfig) {
 	labels := reportLabels(rpt, g, origCount, droppedNodes, droppedEdges, true)
 
 	c := &graph.DotConfig{
-		Title:       rpt.options.Title,
-		Labels:      labels,
-		FormatValue: rpt.formatValue,
-		Total:       rpt.total,
+		Title:        rpt.options.Title,
+		Labels:       labels,
+		FormatValue:  rpt.formatValue,
+		Total:        rpt.total,
+		OmitNodelets: os.Getenv("PPROF_OMIT_NODELETS") != "",
 	}
 	return g, c
 }
